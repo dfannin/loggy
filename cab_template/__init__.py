@@ -1,1 +1,1 @@
-__all__ = ["naqp"]
+__all__ = ["naqp","generic"]

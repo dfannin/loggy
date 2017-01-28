@@ -3,6 +3,8 @@
 
 import sys
 import getopt
+import configparser
+
 from  lib import *
 from  cab_template import *
 
@@ -10,22 +12,25 @@ import pprint
 
 def main():
 
-    mycall = 'KK6DF'
-    myqth  = 'CA'
-    myname  = 'DAVE'
-    cab_temp = naqp.cab_template_naqp
 
 
-    myadi  = ADIF.ADIF(fn)
+    myadi  = ADIF.ADIF(afn)
 
     stat = Stats.Stats()
-    multi = Multipler_BMQ.Multipler_BMQ()
+
+    if contest == "GENERIC":
+    	multi = Multipler_BM.Multipler_BM()
+    if contest == "NAQP":
+    	multi = Multipler_BMQ.Multipler_BMQ()
 
 
     for i in iter(myadi):
         stat.addrow(i)
         multi.addrow(i)
-        print (cab_temp(i,mycall,myname,myqth) )
+        if contest == "GENERIC":
+        	print (cab_temp(i,mycall) )
+        if contest == "NAQP":
+        	print (cab_temp(i,mycall,myname,myqth) )
                 
 
     print ( "\n\nStatistics:")
@@ -41,5 +46,25 @@ def main():
 
 if __name__ == "__main__":
 
-    fn = sys.argv[1]
+    cfn = "config.ini"
+
+    config = configparser.ConfigParser()
+    config.read_file(open(cfn))
+
+    mycall = config['default']['call']
+    myname  = config['default']['name']
+    myqth  = config['contest']['qth']
+    contest = config['contest']['contest']
+    afn  = config['file']['adif']
+    ofn  = config['file']['output']
+
+    if contest == 'NAQP':
+    	cab_temp = naqp.cab_template_naqp
+
+    if contest == 'GENERIC':
+    	cab_temp = generic.cab_template_generic
+
+    if len(sys.argv) > 1:
+    	afn = sys.argv[1]
+
     main()
