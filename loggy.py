@@ -1,6 +1,5 @@
 #!/usr/bin/env python3 
 
-
 import sys
 import getopt
 import configparser
@@ -14,34 +13,33 @@ def main():
 
 
 
-    myadi  = ADIF.ADIF(afn)
+    myadi  = ADIF.ADIF(config['file']['adif'])
 
-    stat = Stats.Stats()
 
-    if contest == "GENERIC":
-    	multi = Multipler_BM.Multipler_BM()
-    if contest == "NAQP":
-    	multi = Multipler_BMQ.Multipler_BMQ()
+    if config['contest']['contest'] == "GENERIC":
+        print ("************using generic") 
+        mycontest = Contest.Contest(config['default']['call']) 
 
+    if config['contest']['contest'] == "NAQP":
+        print ("************using naqp") 
+        mycontest = Contest_NAQP.NAQP(config['default']['call'], config['default']['name'],config['contest']['qth'] )
+                
 
     for i in iter(myadi):
-        stat.addrow(i)
-        multi.addrow(i)
-        if contest == "GENERIC":
-        	print (cab_temp(i,mycall) )
-        if contest == "NAQP":
-        	print (cab_temp(i,mycall,myname,myqth) )
+        mycontest.addrow(i)
+        print(mycontest.format_cabrillo_row())
                 
 
     print ( "\n\nStatistics:")
-    pprint.pprint(stat.dump())
+    print (mycontest.qsocount())
 
     print ("\n\nMultipliers:")
-    print ( multi.multipler())
-    pprint.pprint(multi.dump())
+    print ( mycontest.multipler()  ) 
+    pprint.pprint ( mycontest.multipler_dump()  ) 
 
-    score =  multi.multipler() * stat.qso() 
-    print ( "score : %s" % ( score )) 
+    score =  mycontest.multipler() * mycontest.qsocount() 
+    print ("\n\nTotal:")
+    print ( "Score : %s" % ( score )) 
 
 
 if __name__ == "__main__":
@@ -51,20 +49,9 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read_file(open(cfn))
 
-    mycall = config['default']['call']
-    myname  = config['default']['name']
-    myqth  = config['contest']['qth']
-    contest = config['contest']['contest']
-    afn  = config['file']['adif']
     ofn  = config['file']['output']
 
-    if contest == 'NAQP':
-    	cab_temp = naqp.cab_template_naqp
-
-    if contest == 'GENERIC':
-    	cab_temp = generic.cab_template_generic
-
     if len(sys.argv) > 1:
-    	afn = sys.argv[1]
+    	config['file']['adif'] = sys.argv[1]
 
     main()

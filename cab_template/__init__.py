@@ -1,1 +1,1 @@
-__all__ = ["naqp","generic"]
+__all__ = ["Contest","Contest_NAQP"]

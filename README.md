@@ -1,5 +1,5 @@
 # Loggy
-Notes: Still Under development, feature list not complete
+Notes: Still Under development, feature list not impleted yet, alpha software
 
 ## Introduction
 Python library and cli for processing, convert and analytics for ham radio adif and cabrillo log files.
