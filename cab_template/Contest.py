@@ -55,6 +55,9 @@ class Contest(object):
     def qsocount(self):
         return self._qsocount 
 
+    def score(self):
+        return self.qsocount()  * self.multipler() 
+
     def format_cabrillo_row(self):
         freq =  int( float(self.qso['freq']) * 1000.0 )
         mode = self.qso['mode']
@@ -71,6 +74,9 @@ class Contest(object):
                     hdr += tag.upper() + ": " + line + "\n" 
             else:
                 hdr +=  tag.upper() + ": " + tagval + "\n"
+        hdr += "X-QSOCOUNT: " + str(self.qsocount()) + "\n" 
+        hdr += "X-MULTIPLER: " + str(self.multipler())  + "\n"
+        hdr += "CLAIMED-SCORE: " + str(self.score()) 
         return hdr
 
     def cabrillo_footer(self):

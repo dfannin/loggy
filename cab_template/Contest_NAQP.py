@@ -37,7 +37,7 @@ class NAQP_SSB(Contest.Contest):
         comment = self.qso['comment'].split(',')
         name = comment[1].upper()
         qth = comment[2].upper()
-        return 'QSO: %s %s %s %s %s %s %s %-8s %-12s %-4s' % (freq, mode, qso_date, self.qso['time_on'] , self.config['default']['call'].upper(), self.config['contest']['name'].upper(), self.config['contest']['qth'].upper(), self.qso['call'], name, qth)
+        return 'QSO: %5s %2s %s %s %-15s %-10s %-3s %-15s %-10s %-3s' % (freq, mode, qso_date, self.qso['time_on'] , self.config['default']['call'].upper(), self.config['contest']['name'].upper(), self.config['contest']['qth'].upper(), self.qso['call'], name, qth)
 
 class NAQP_CW(Contest.Contest):
 
@@ -75,4 +75,4 @@ class NAQP_CW(Contest.Contest):
         comment = self.qso['comment'].split(',')
         name = comment[1].upper()
         qth = comment[2].upper()
-        return 'QSO: %s %s %s %s %s %s %s %-8s %-12s %-4s' % (freq, mode, qso_date, self.qso['time_on'] , self.config['default']['call'].upper(), self.config['contest']['name'].upper(), self.config['contest']['qth'].upper(), self.qso['call'], name, qth)
+        return 'QSO: %5s %2s %s %s %-15s %-10s %-3s %-15s %-10s %-3s' % (freq, mode, qso_date, self.qso['time_on'] , self.config['default']['call'].upper(), self.config['contest']['name'].upper(), self.config['contest']['qth'].upper(), self.qso['call'], name, qth)
