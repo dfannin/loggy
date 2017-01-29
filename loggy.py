@@ -16,18 +16,24 @@ def main():
     myadi  = ADIF.ADIF(config['file']['adif'])
 
 
+    
     if config['contest']['contest'] == "GENERIC":
-        print ("************using generic") 
-        mycontest = Contest.Contest(config['default']['call']) 
+        mycontest = Contest.Contest(config) 
 
-    if config['contest']['contest'] == "NAQP":
-        print ("************using naqp") 
-        mycontest = Contest_NAQP.NAQP(config['default']['call'], config['default']['name'],config['contest']['qth'] )
+    if config['contest']['contest'] == "NAQP-SSB":
+        mycontest = Contest_NAQP.NAQP_SSB(config)
+
+    if config['contest']['contest'] == "NAQP-CW":
+        mycontest = Contest_NAQP.NAQP_CW(config)
                 
+    print(mycontest.description) 
+    print(mycontest.cabrillo_header())
 
     for i in iter(myadi):
         mycontest.addrow(i)
         print(mycontest.format_cabrillo_row())
+
+    print(mycontest.cabrillo_footer())
                 
 
     print ( "\n\nStatistics:")
