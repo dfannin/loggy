@@ -1,4 +1,9 @@
-""" library to read ADIF file, and return each row
+""" 
+
+name: ADIF.py
+
+description:
+library to read ADIF file, and return each row
 
 reads any ADIF 1.0/2.0 file
 
@@ -20,9 +25,10 @@ for qso in adif:
     print(qso)
 
 
-Author" David Fannin
-Copyright" 2017, David Fannin
+Author: David Fannin
+Copyright: 2017, David Fannin
 License: See Project License File
+Python Version: 3.0
 
 """
 

@@ -1,4 +1,25 @@
 #!/usr/bin/env python3 
+""" 
+
+name: loggy.py
+
+description: 
+main program for adif to cabrillo log file processing, transformation and analaytics program
+
+usage: 
+
+    usually, just run "loggy.py"
+
+    loggy.py [-h] [-C alt_config.ini] [-c contest_name]  [-o output_file]  [adif_input_file]
+
+    see "config.ini" file for many options, including input and output file names
+
+Author: David Fannin
+Copyright: 2017, David Fannin
+License: New BSD (3 clause)
+Python Version: 3
+
+"""
 
 import sys
 import getopt
@@ -8,6 +29,9 @@ from  lib import *
 from  cab_template import *
 
 import pprint
+
+
+loggy_version = "1.0.a"
 
 def main():
 
@@ -47,17 +71,60 @@ def main():
     #print ("\n\nTotal:")
     #print ( "Score : %s" % ( score )) 
 
+def usage():
+    print ("loggy.py [-h] [-v] [-C alt_config.ini] [-c contest_name]  [-o output_file]  [adif_input_file]")
+    print ("version " + loggy_version )
+    print ("-h : help")
+    print ("-v : version")
+    print ("-C <ini file> : specify config.ini file")
+    print ("-c <contest name> : use this contest name for processing and scoring")
+    print ("-o <output file> : output file")
+    print ("see: http://github.com/dfannin/loggy")
 
 if __name__ == "__main__":
 
-    cfn = "config.ini"
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hvc:C:o:")
+    except getopt.GetoptError as err:
+        print(err)
+        sys.exit(2)
 
+    # defaults
+    cfn = "config.ini"
+    contest_name = ""
+    ofn = ""
+
+    # read any command line options
+    for o,a in opts:
+        if o == "-h":
+            usage()
+            sys.exit()
+        if o == "-v":
+            print(loggy_version) 
+            sys.exit()
+        elif o == "-C":
+            cfn = a 
+        elif o == "-c":
+            contest_name = a
+        elif o == "-o":
+            ofn = a
+
+    # read the config file
     config = configparser.ConfigParser()
     config.read_file(open(cfn))
 
-    ofn  = config['file']['output']
+    # override any config file entries from command line
 
-    if len(sys.argv) > 1:
-    	config['file']['adif'] = sys.argv[1]
+    if ofn: 
+        ofn  = config['file']['output']
+
+    if contest_name:
+        config['contest']['contest'] = contest_name
+
+    try:
+        a = args[0] 
+        config['file']['adif'] = a
+    except IndexError:
+        pass
 
     main()
