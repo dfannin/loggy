@@ -9,9 +9,6 @@ main program for adif to cabrillo log file processing, transformation and analay
 usage: 
 
     usually, just run "loggy.py"
-
-    loggy.py [-h] [-C alt_config.ini] [-c contest_name]  [-o output_file]  [adif_input_file]
-
     see "config.ini" file for many options, including input and output file names
 
 Author: David Fannin
@@ -26,7 +23,7 @@ import getopt
 import configparser
 
 from  lib import *
-from  cab_template import *
+from  contest import *
 
 import pprint
 
@@ -35,7 +32,16 @@ loggy_version = "1.0.a"
 
 def main():
 
-    myadi  = ADIF.ADIF(config['file']['adif'])
+    input_type = config['file']['input_type'] 
+    cf = config['file']
+
+    if input_type == "ADIF":
+    	infile   = ADIF.ADIF(cf['adif'])
+    elif input_type == "CSV":
+        # need to parse the field string into a list (and strip spaces)
+    	infile   = CSV.CSV( cf['csv'], [x.strip() for x in cf['csv_fields'].split(",")])
+    elif input_type == "MYSQL":
+    	infile   = MYSQL.MYSQL( cf['myqsl_qry'], cf['mysql_connector'] )
     
     if config['contest']['contest'] == "GENERIC":
         mycontest = Contest.Contest(config) 
@@ -49,7 +55,7 @@ def main():
     print(mycontest.description) 
 
     cabrillo_qsos = ''
-    for i in iter(myadi):
+    for i in iter(infile):
         mycontest.addrow(i)
         cabrillo_qsos += mycontest.format_cabrillo_row() + "\n"
 
